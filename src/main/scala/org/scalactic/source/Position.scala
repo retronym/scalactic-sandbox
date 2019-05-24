@@ -36,12 +36,18 @@ object Position {
 
     def apply(context: Context): context.Tree = {
       import context.universe._
+      def strLit(s: String) = {
+        internal.setType(Literal(Constant(s)), definitions.StringClass.toTypeConstructor)
+      }
+      def intLit(i: Int) = {
+        internal.setType(Literal(Constant(i)), definitions.IntTpe)
+      }
       val args = List(
-        Literal(Constant(context.enclosingPosition.source.file.name)),
-        Literal(if (showScalacticFillFilePathnames) Constant(context.enclosingPosition.source.path) else Constant("")),
-        Literal(Constant(context.enclosingPosition.line))
+        strLit(context.enclosingPosition.source.file.name),
+        strLit(if (showScalacticFillFilePathnames) context.enclosingPosition.source.path else ""),
+        intLit(context.enclosingPosition.line)
       )
-      internal.gen.mkMethodCall(Position_apply.asInstanceOf[Symbol], args)
+      internal.setType(Apply(internal.gen.mkAttributedIdent(Position_apply.asInstanceOf[Symbol]),args), Position_apply.info.finalResultType.asInstanceOf[Type])
     }
   }
   private var cache = new java.lang.ref.WeakReference[PositionImpl](null)
