@@ -1,18 +1,12 @@
 package org.scalactic.source
 
-import java.util
 
-import scala.reflect.macros.Context
+import scala.reflect.macros.blackbox.Context
 
 /**
  * Helper class for Position macro. (Will be removed from the public API if possible in a subsequent 3.0.0-RCx release.)
  */
-object PositionMacro {
-    
-  private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = {
-    val value = System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")
-    value != null && value == "yes"
-  }
+object PositionMacro {   
   private object sourceCompatHack {
     object internal { object decorators {} }
   }
@@ -48,7 +42,7 @@ object PositionMacro {
       }
       val args = List(
         strLit(context.enclosingPosition.source.file.name),
-        strLit(if (showScalacticFillFilePathnames) context.enclosingPosition.source.path else ""),
+        strLit(""),
         intLit(context.enclosingPosition.line)
       )
 
